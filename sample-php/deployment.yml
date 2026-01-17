@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: hotel-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: sample-php-app
+          image: ghcr.io/niridoy/sample-php-app:latest
+          imagePullPolicy: Always
+          # imagePullPolicy: IfNotPresent # <-- Only pull if not local
+          ports:
+            - containerPort: 80
