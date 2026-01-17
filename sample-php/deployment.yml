@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: sample-php-app
-          image: ghcr.io/niridoy/sample-php-app:450b84a7355efccefd313b2a97381be164906cf3
+          image: ghcr.io/niridoy/sample-php-app:0874d3d561abd168e7172367fbe92d1a5c0d7cd8
           imagePullPolicy: Always
           # imagePullPolicy: IfNotPresent # <-- Only pull if not local
           ports:
