@@ -7,8 +7,8 @@ spec:
   template:
     spec:
       containers:
-        - name: sample-php-app
-          image: ghcr.io/niridoy/sample-php-app:main
+        - name: sample-php-prd
+          image: ghcr.io/niridoy/sample-php:main
           env:
             - name: ENV
               value: "prd"

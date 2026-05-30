@@ -6,8 +6,8 @@ spec:
   template:
     spec:
       containers:
-        - name: sample-php-app
-          image: ghcr.io/niridoy/sample-php-app:stg
+        - name: sample-php-stg
+          image: ghcr.io/niridoy/sample-php:main
           env:
             - name: ENV
               value: "stg"
