@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: product-service
+          image: ghcr.io/niridoy/rocket-product-service:main
+          env:
+            - name: ENV
+              value: "prd"
