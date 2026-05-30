@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: ghcr.io/niridoy/rocket-user-service:1.0.16-16
+          image: ghcr.io/niridoy/rocket-user-service:dev-v1.0.0-29
           env:
             - name: ENV
               value: "dev"
