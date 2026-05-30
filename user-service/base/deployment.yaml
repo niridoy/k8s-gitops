@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: ghcr.io/my-org/user-service:latest
+          image: ghcr.io/niridoy/rocket-user-service:latest
           ports:
             - containerPort: 8080
           env:
