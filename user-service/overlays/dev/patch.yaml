@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: ghcr.io/niridoy/rocket-user-service:dev-main-31
+          image: ghcr.io/niridoy/rocket-user-service:dev-feature-email-reset-32
           env:
             - name: ENV
               value: "dev"
