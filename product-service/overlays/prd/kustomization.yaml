@@ -1,8 +1,5 @@
 resources:
   - ../../base
 
-components:
-  - ../../../components/ghcr-secret
-
 patches:
   - path: patch.yaml

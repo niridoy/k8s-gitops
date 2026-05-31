@@ -1,49 +1,36 @@
 #!/usr/bin/env bash
-# Creates .dockerconfigjson for Kustomize from `docker login ghcr.io` or env vars.
+# Creates ghcr-secret in the cluster (works with kubectl apply and Argo CD).
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-DOCKER_CONFIG="${DOCKER_CONFIG:-$HOME/.docker/config.json}"
+create_secret() {
+  local namespace="$1"
+  local ns_flag=()
+  if [[ -n "$namespace" ]]; then
+    ns_flag=(--namespace "$namespace")
+  fi
 
-write_from_docker_config() {
-  local dest="$1"
-  if [[ ! -f "$DOCKER_CONFIG" ]]; then
-    echo "Missing $DOCKER_CONFIG — run: docker login ghcr.io" >&2
+  if [[ -n "${GHCR_USERNAME:-}" && -n "${GHCR_TOKEN:-}" ]]; then
+    kubectl create secret docker-registry ghcr-secret \
+      --docker-server=ghcr.io \
+      --docker-username="${GHCR_USERNAME}" \
+      --docker-password="${GHCR_TOKEN}" \
+      --docker-email="${GHCR_EMAIL:-${GHCR_USERNAME}@users.noreply.github.com}" \
+      "${ns_flag[@]}" \
+      --dry-run=client -o yaml | kubectl apply -f -
+  elif [[ -f "${DOCKER_CONFIG:-$HOME/.docker/config.json}" ]]; then
+    kubectl create secret generic ghcr-secret \
+      --from-file=.dockerconfigjson="${DOCKER_CONFIG:-$HOME/.docker/config.json}" \
+      --type=kubernetes.io/dockerconfigjson \
+      "${ns_flag[@]}" \
+      --dry-run=client -o yaml | kubectl apply -f -
+  else
+    echo "Run: docker login ghcr.io   OR set GHCR_USERNAME and GHCR_TOKEN" >&2
     exit 1
   fi
-  cp "$DOCKER_CONFIG" "$dest"
-  echo "Wrote $dest from $DOCKER_CONFIG"
+  echo "ghcr-secret ready in namespace: ${namespace:-default}"
 }
 
-write_from_env() {
-  local dest="$1"
-  : "${GHCR_USERNAME:?Set GHCR_USERNAME}"
-  : "${GHCR_TOKEN:?Set GHCR_TOKEN (GitHub PAT with read:packages)}"
-  local email="${GHCR_EMAIL:-${GHCR_USERNAME}@users.noreply.github.com}"
-  local auth
-  auth="$(printf '%s:%s' "$GHCR_USERNAME" "$GHCR_TOKEN" | base64 | tr -d '\n')"
-  cat >"$dest" <<EOF
-{
-  "auths": {
-    "ghcr.io": {
-      "username": "${GHCR_USERNAME}",
-      "password": "${GHCR_TOKEN}",
-      "email": "${email}",
-      "auth": "${auth}"
-    }
-  }
-}
-EOF
-  echo "Wrote $dest from GHCR_USERNAME/GHCR_TOKEN"
-}
+create_secret ""
+create_secret "hotel-app"
 
-for dir in "${ROOT}/components/ghcr-secret" "${ROOT}/components/ghcr-secret-hotel-app"; do
-  dest="${dir}/.dockerconfigjson"
-  if [[ -n "${GHCR_USERNAME:-}" && -n "${GHCR_TOKEN:-}" ]]; then
-    write_from_env "$dest"
-  else
-    write_from_docker_config "$dest"
-  fi
-done
-
-echo "Done. Apply any overlay, e.g.: kubectl apply -k user-service/overlays/dev"
+echo "Done. Deploy with kubectl or Argo CD (repo: https://github.com/niridoy/k8s-gitops.git)."

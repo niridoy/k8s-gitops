@@ -1,6 +1,8 @@
 # k8s
 
-GitOps layout: each app owns **Deployment + Service**; edge routing is split by boundary.
+GitOps repository: **[https://github.com/niridoy/k8s-gitops](https://github.com/niridoy/k8s-gitops)** (local clone folder may still be named `k8s`).
+
+Each app owns **Deployment + Service**; edge routing is split by boundary.
 
 ## Ingress design
 
@@ -38,55 +40,27 @@ GitOps layout: each app owns **Deployment + Service**; edge routing is split by 
 
 Replace example hostnames and `ingressClassName` if your cluster uses a different ingress controller.
 
+## Argo CD
+
+Register all dev apps (after pushing to `main`):
+
+```bash
+./scripts/setup-ghcr-pull-secret.sh
+kubectl apply -f argocd/applications/dev/
+```
+
+See [argocd/README.md](argocd/README.md) for repo URL migration and patching existing Applications.
+
 ## GHCR image pull (`ghcr-secret`)
 
 Private images from `ghcr.io` need a pull secret. Deployments reference `imagePullSecrets: ghcr-secret`.
 
-### One-time setup (local or CI)
-
-**Option A — after `docker login ghcr.io`:**
+Create secrets in **default** and **hotel-app** (required before deploy or Argo CD sync):
 
 ```bash
 chmod +x scripts/setup-ghcr-pull-secret.sh
+docker login ghcr.io   # or: export GHCR_USERNAME=... GHCR_TOKEN=...
 ./scripts/setup-ghcr-pull-secret.sh
-```
-
-**Option B — GitHub PAT (no Docker on machine):**
-
-```bash
-export GHCR_USERNAME=your-github-user
-export GHCR_TOKEN=ghp_xxxx          # PAT with read:packages
-./scripts/setup-ghcr-pull-secret.sh
-```
-
-This writes gitignored `components/ghcr-secret/.dockerconfigjson` (default namespace) and `components/ghcr-secret-hotel-app/.dockerconfigjson` (`hotel-app` namespace). Overlays include these via Kustomize `components`.
-
-**Option C — manual secret (no Kustomize secret file):**
-
-```bash
-kubectl create secret docker-registry ghcr-secret \
-  --docker-server=ghcr.io \
-  --docker-username=YOUR_USER \
-  --docker-password=YOUR_PAT \
-  --docker-email=YOUR_EMAIL
-
-kubectl create secret docker-registry ghcr-secret \
-  --docker-server=ghcr.io \
-  --docker-username=YOUR_USER \
-  --docker-password=YOUR_PAT \
-  --docker-email=YOUR_EMAIL \
-  -n hotel-app
-```
-
-If you use Option C only, remove the `components:` block from overlay `kustomization.yaml` files (secret is not generated from repo).
-
-### Re-deploy after secret exists
-
-```bash
-kubectl apply -k user-service/overlays/dev
-kubectl apply -k product-service/overlays/dev
-kubectl delete pod -l app=product-service
-kubectl delete pod -l app=user-service
 ```
 
 ## Validate manifests
