@@ -11,7 +11,7 @@ spec:
           hostnames:
             - mysql.db.local
       containers:
-        - name: user-service
+        - name: user-service-dev
           image: ghcr.io/niridoy/rocket-user-service:dev-main-37
           env:
             - name: ENV

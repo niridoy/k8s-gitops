@@ -11,7 +11,7 @@ spec:
           hostnames:
             - mysql.db.local
       containers:
-        - name: product-service
+        - name: product-service-dev
           image: ghcr.io/niridoy/rocket-product-service:dev-product-create-2
           env:
             - name: ENV
