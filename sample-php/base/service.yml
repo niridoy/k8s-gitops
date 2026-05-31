@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nginx-service
-  namespace: hotel-app
+  namespace: business-manager
 spec:
   selector:
     app: nginx

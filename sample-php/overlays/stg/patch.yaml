@@ -2,12 +2,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
-  namespace: hotel-app
+  namespace: business-manager
 spec:
   template:
     spec:
       containers:
-        - name: sample-php-stg
+        - name: business-manager-stg
           image: ghcr.io/niridoy/sample-php:main
           env:
             - name: ENV

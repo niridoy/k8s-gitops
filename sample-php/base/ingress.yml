@@ -2,9 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginx-ingress
-  namespace: hotel-app
+  namespace: business-manager
   labels:
-    app.kubernetes.io/name: sample-php
+    app.kubernetes.io/name: business-manager
     app.kubernetes.io/component: network
 spec:
   ingressClassName: nginx
