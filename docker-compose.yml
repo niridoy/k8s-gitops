@@ -1,0 +1,34 @@
+# Local MySQL for development (host machine).
+# Kubernetes pods reach this via mysql.db.local → Minikube host gateway (see scripts/setup-local-mysql.sh).
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    hostname: mysql.db.local
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${DB_NAME:-appdb}
+      MYSQL_USER: ${DB_USER:-user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-password}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      dbnet:
+        aliases:
+          - mysql.db.local
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootpassword}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+networks:
+  dbnet:
+    driver: bridge
+
+volumes:
+  mysql_data:

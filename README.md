@@ -40,6 +40,17 @@ Each app owns **Deployment + Service**; edge routing is split by boundary.
 
 Replace example hostnames and `ingressClassName` if your cluster uses a different ingress controller.
 
+## Local MySQL (`mysql.db.local`)
+
+```bash
+cp .env.example .env
+./scripts/setup-local-mysql.sh
+kubectl apply -k user-service/overlays/dev
+kubectl apply -k product-service/overlays/dev
+```
+
+See [local-dev/README.md](local-dev/README.md).
+
 ## Argo CD
 
 Register all dev apps (after pushing to `main`):

@@ -1,0 +1,29 @@
+# Points Service "mysql" at host Docker MySQL (port 3306).
+# Apply via: scripts/setup-local-mysql.sh
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: default
+  labels:
+    app.kubernetes.io/name: mysql
+    app.kubernetes.io/component: local-external
+spec:
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mysql
+  namespace: default
+subsets:
+  - addresses:
+      - ip: PLACEHOLDER_GATEWAY_IP
+    ports:
+      - name: mysql
+        port: 3306
+        protocol: TCP

@@ -1,2 +1,6 @@
 components/ghcr-secret/.dockerconfigjson
 components/ghcr-secret-hotel-app/.dockerconfigjson
+.env
+local-dev/gateway.env
+user-service/overlays/dev/gateway.env
+product-service/overlays/dev/gateway.env
