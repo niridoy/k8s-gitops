@@ -7,5 +7,5 @@ spec:
   template:
     spec:
       containers:
-        - name: user-service-dev
+        - name: user-service
           image: ghcr.io/niridoy/rocket-user-service:dev-main-37
