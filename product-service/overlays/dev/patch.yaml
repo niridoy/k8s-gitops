@@ -2,25 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: product-service
+
 spec:
-  replicas: 1
   template:
     spec:
-      hostAliases:
-        - ip: "127.0.0.1"
-          hostnames:
-            - mysql.db.local
       containers:
-        - name: product-service-dev
+        - name: product-service
           image: ghcr.io/niridoy/rocket-product-service:dev-product-create-2
-          env:
-            - name: ENV
-              value: "dev"
-            - name: DB_HOST
-              value: mysql.db.local
-            - name: DB_USER
-              value: user
-            - name: DB_PASSWORD
-              value: password
-            - name: DB_NAME
-              value: appdb

@@ -2,23 +2,34 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: product-service
+
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: product-service
+
   template:
     metadata:
       labels:
         app: product-service
+
     spec:
       imagePullSecrets:
         - name: ghcr-secret
+
       containers:
         - name: product-service
           image: ghcr.io/niridoy/rocket-product-service:latest
+
           ports:
             - containerPort: 8181
-          env:
-            - name: ENV
-              value: "base"
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
