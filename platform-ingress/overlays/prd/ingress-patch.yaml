@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: platform-ingress
+spec:
+  tls:
+    - hosts:
+        - api.example.com
+      secretName: platform-tls
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /user-service
+            pathType: Prefix
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 80
+          - path: /product-service
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 80

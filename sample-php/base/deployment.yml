@@ -13,6 +13,8 @@ spec:
       labels:
         app: nginx
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: sample-php-app
           image: ghcr.io/niridoy/sample-php-app:10afde644508861541c11d0c99ff1ea1c39a34bb

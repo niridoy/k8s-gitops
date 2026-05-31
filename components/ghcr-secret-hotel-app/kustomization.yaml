@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+namespace: hotel-app
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+secretGenerator:
+  - name: ghcr-secret
+    type: kubernetes.io/dockerconfigjson
+    files:
+      - .dockerconfigjson

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: platform-ingress
+  labels:
+    app.kubernetes.io/name: platform-ingress
+    app.kubernetes.io/component: network
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /user-service
+            pathType: Prefix
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 80
+          - path: /product-service
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 80

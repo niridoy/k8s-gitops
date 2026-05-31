@@ -3,7 +3,11 @@ kind: Ingress
 metadata:
   name: nginx-ingress
   namespace: hotel-app
+  labels:
+    app.kubernetes.io/name: sample-php
+    app.kubernetes.io/component: network
 spec:
+  ingressClassName: nginx
   rules:
     - host: nginx.local
       http:

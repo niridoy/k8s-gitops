@@ -1,4 +1,4 @@
-deployment.yamlapiVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: user-service
@@ -12,11 +12,13 @@ spec:
       labels:
         app: user-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret
       containers:
         - name: user-service
           image: ghcr.io/niridoy/rocket-user-service:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 8181
           env:
             - name: ENV
               value: "base"
